@@ -1,74 +1,73 @@
 #include "shell.h"
 
 /**
- * clear_shell_info - initializes shell_info_t struct
- * @shell_info: struct address
+ * clear_info - initializes a struct
+ * @info: address of a struct
  */
-void clear_shell_info(shell_info_t *shell_info)
+void clear_info(info_t *info)
 {
-	shell_info->arguments = NULL;
-	shell_info->argument_vector = NULL;
-	shell_info->path = NULL;
-	shell_info->argument_count = 0;
+	info->arg = NULL;
+	info->argv = NULL;
+	info->path = NULL;
+	info->argc = 0;
 }
 
 /**
- * set_shell_info - initializes shell_info_t struct
- * @shell_info: struct address
- * @argv: argument vector
+ * set_info - initializes a struct
+ * @info: address of a struct
+ * @av: argument
  */
-void set_shell_info(shell_info_t *shell_info, char **argv)
+void set_info(info_t *info, char **av)
 {
 	int i = 0;
 
-	shell_info->program_name = argv[0];
-	if (shell_info->arguments)
+	info->fname = av[0];
+	if (info->arg)
 	{
-		shell_info->argument_vector = strtow(shell_info->arguments, " \t");
-		if (!shell_info->argument_vector)
+		info->argv = strtow(info->arg, " \t");
+		if (!info->argv)
 		{
-			shell_info->argument_vector = malloc(sizeof(char *) * 2);
-			if (shell_info->argument_vector)
+			info->argv = malloc(sizeof(char *) * 2);
+			if (info->argv)
 			{
-				shell_info->argument_vector[0] = _strdup(shell_info->arguments);
-				shell_info->argument_vector[1] = NULL;
+				info->argv[0] = _strdup(info->arg);
+				info->argv[1] = NULL;
 			}
 		}
-		for (i = 0; shell_info->argument_vector && shell_info->argument_vector[i]; i++)
+		for (i = 0; info->argv && info->argv[i]; i++)
 			;
-		shell_info->argument_count = i;
+		info->argc = i;
 
-		replace_alias(shell_info);
-		replace_variables(shell_info);
+		replace_alias(info);
+		replace_vars(info);
 	}
 }
 
 /**
- * free_shell_info - frees shell_info_t struct fields
- * @shell_info: struct address
+ * free_info - frees a struct field
+ * @info: address of a struct
  * @all: true if freeing all fields
  */
-void free_shell_info(shell_info_t *shell_info, int all)
+void free_info(info_t *info, int all)
 {
-	ffree(shell_info->argument_vector);
-	shell_info->argument_vector = NULL;
-	shell_info->path = NULL;
+	ffree(info->argv);
+	info->argv = NULL;
+	info->path = NULL;
 	if (all)
 	{
-		if (!shell_info->command_buffer)
-			free(shell_info->arguments);
-		if (shell_info->environment)
-			free_list(&(shell_info->environment));
-		if (shell_info->history)
-			free_list(&(shell_info->history));
-		if (shell_info->aliases)
-			free_list(&(shell_info->aliases));
-		ffree(shell_info->environment_copy);
-		shell_info->environment_copy = NULL;
-		bfree((void **)shell_info->command_buffer);
-		if (shell_info->read_file_descriptor > 2)
-			close(shell_info->read_file_descriptor);
+		if (!info->cmd_buf)
+			free(info->arg);
+		if (info->env)
+			free_list(&(info->env));
+		if (info->history)
+			free_list(&(info->history));
+		if (info->alias)
+			free_list(&(info->alias));
+		ffree(info->environ);
+			info->environ = NULL;
+		bfree((void **)info->cmd_buf);
+		if (info->readfd > 2)
+			close(info->readfd);
 		_putchar(BUF_FLUSH);
 	}
 }
-

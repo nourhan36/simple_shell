@@ -1,47 +1,47 @@
 #include "shell.h"
 
 /**
- * custom_memset - fills memory with a constant byte
- * @mem: the pointer to the memory area
- * @val: the byte to fill *mem with
- * @size: the amount of bytes to be filled
- * Return: (mem) a pointer to the memory area mem
+ * _memset - fills memory with a constant byte
+ * @s: the pointer to the memory area
+ * @b: the byte to fill *s with
+ * @n: the amount of bytes to be filled
+ * Return: (s) a pointer to the memory area s
  */
-char *custom_memset(char *mem, char val, unsigned int size)
+char *_memset(char *s, char b, unsigned int n)
 {
 	unsigned int i;
 
-	for (i = 0; i < size; i++)
-		mem[i] = val;
-	return (mem);
+	for (i = 0; i < n; i++)
+		s[i] = b;
+	return (s);
 }
 
 /**
- * free_string_array - frees a string array
- * @str_arr: string array
+ * ffree - frees a string of strings
+ * @pp: string of strings
  */
-void free_string_array(char **str_arr)
+void ffree(char **pp)
 {
-	char **ptr = str_arr;
+	char **a = pp;
 
-	if (!str_arr)
+	if (!pp)
 		return;
-	while (*str_arr)
-		free(*str_arr++);
-	free(ptr);
+	while (*pp)
+		free(*pp++);
+	free(a);
 }
 
 /**
- * custom_realloc - reallocates a block of memory
+ * _realloc - reallocates a block of memory
  * @ptr: pointer to previous malloc'ated block
  * @old_size: byte size of previous block
  * @new_size: byte size of new block
  *
- * Return: pointer to the reallocated block
+ * Return: pointer to da ol'block nameen.
  */
-void *custom_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	char *new_ptr;
+	char *p;
 
 	if (!ptr)
 		return (malloc(new_size));
@@ -50,13 +50,13 @@ void *custom_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 	if (new_size == old_size)
 		return (ptr);
 
-	new_ptr = malloc(new_size);
-	if (!new_ptr)
+	p = malloc(new_size);
+	if (!p)
 		return (NULL);
 
 	old_size = old_size < new_size ? old_size : new_size;
 	while (old_size--)
-		new_ptr[old_size] = ((char *)ptr)[old_size];
+		p[old_size] = ((char *)ptr)[old_size];
 	free(ptr);
-	return (new_ptr);
+	return (p);
 }

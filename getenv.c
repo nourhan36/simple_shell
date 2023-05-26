@@ -1,41 +1,39 @@
 #include "shell.h"
 
 /**
- * get_environment - returns the string array copy of our environment
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * get_environ - return a string array
+ * @info: contains arguments to maintain function
+ * Return: 0
  */
-char **get_environment(info_t *info)
+char **get_environ(info_t *info)
 {
-	if (!info->environment || info->env_changed)
+	if (!info->environ || info->env_changed)
 	{
-		info->environment = list_to_strings(info->env);
+		info->environ = list_to_strings(info->env);
 		info->env_changed = 0;
 	}
 
-	return (info->environment);
+	return (info->environ);
 }
 
 /**
- * unset_environment_variable - Remove an environment variable
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: 1 on delete, 0 otherwise
- * @variable: the string env variable property
+ * _unsetenv - Remove environment
+ * @info: contains arguments to maintain function
+ * @var: string
+ * Return: 1 or 0
  */
-int unset_environment_variable(info_t *info, char *variable)
+int _unsetenv(info_t *info, char *var)
 {
 	list_t *node = info->env;
 	size_t i = 0;
 	char *p;
 
-	if (!node || !variable)
+	if (!node || !var)
 		return (0);
 
 	while (node)
 	{
-		p = starts_with(node->str, variable);
+		p = starts_with(node->str, var);
 		if (p && *p == '=')
 		{
 			info->env_changed = delete_node_at_index(&(info->env), i);
@@ -50,45 +48,42 @@ int unset_environment_variable(info_t *info, char *variable)
 }
 
 /**
- * set_environment_variable - Initialize a new environment variable,
- *             or modify an existing one
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * @variable: the string env variable property
- * @value: the string env variable value
- *  Return: Always 0
+ * _setenv - Initialize or modify an environment
+ * @info: contains arguments to maintain function
+ * @var: string
+ * @value: string
+ *  Return: 0
  */
-int set_environment_variable(info_t *info, char *variable, char *value)
+int _setenv(info_t *info, char *var, char *value)
 {
-	char *buffer = NULL;
+	char *buf = NULL;
 	list_t *node;
 	char *p;
 
-	if (!variable || !value)
+	if (!var || !value)
 		return (0);
 
-	buffer = malloc(_strlen(variable) + _strlen(value) + 2);
-	if (!buffer)
+	buf = malloc(_strlen(var) + _strlen(value) + 2);
+	if (!buf)
 		return (1);
-	_strcpy(buffer, variable);
-	_strcat(buffer, "=");
-	_strcat(buffer, value);
+	_strcpy(buf, var);
+	_strcat(buf, "=");
+	_strcat(buf, value);
 	node = info->env;
 	while (node)
 	{
-		p = starts_with(node->str, variable);
+		p = starts_with(node->str, var);
 		if (p && *p == '=')
 		{
 			free(node->str);
-			node->str = buffer;
+			node->str = buf;
 			info->env_changed = 1;
 			return (0);
 		}
 		node = node->next;
 	}
-	add_node_end(&(info->env), buffer, 0);
-	free(buffer);
+	add_node_end(&(info->env), buf, 0);
+	free(buf);
 	info->env_changed = 1;
 	return (0);
 }
-

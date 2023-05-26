@@ -1,72 +1,74 @@
 #include "shell.h"
 
 /**
- * is_mode_active - returns true if the shell is in an active mode
- * @data: struct address
+ * interactive - if shell is interactive mode return 1
+ * @info: address of struct
  *
- * Return: 1 if active mode, 0 otherwise
+ * Return: 1 or 0
  */
-int is_mode_active(info_t *data)
+int interactive(info_t *info)
 {
-	return (isatty(STDIN_FILENO) && data->fd_read <= 2);
+	return (isatty(STDIN_FILENO) && info->readfd <= 2);
 }
 
 /**
- * is_separator - checks if a character is a separator
- * @ch: the character to check
- * @sep: the separator string
- * Return: 1 if true, 0 if false
+ * is_delim - see the character if it is a delimeter
+ * @c: char
+ * @delim: delimeter
+ * Return: 1 or 0
  */
-int is_separator(char ch, char *sep)
+int is_delim(char c, char *delim)
 {
-	while (*sep)
-		if (*sep++ == ch)
+	while (*delim)
+		if (*delim++ == c)
 			return (1);
 	return (0);
 }
 
 /**
- * is_alpha_char - checks for an alphabetic character
- * @ch: The character to check
- * Return: 1 if ch is alphabetic, 0 otherwise
+ * _isalpha - checks for alphabetic character
+ * @c: char
+ * Return: 1 or 0
  */
-int is_alpha_char(int ch)
+
+int _isalpha(int c)
 {
-	if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 		return (1);
 	else
 		return (0);
 }
 
 /**
- * convert_to_int - converts a string to an integer
- * @str: the string to be converted
+ * _atoi - converts a string to an integer
+ * @s: the string to be converted
  * Return: 0 if no numbers in string, converted number otherwise
  */
-int convert_to_int(char *str)
-{
-	int i, sign = 1, flag = 0, result;
-	unsigned int output = 0;
 
-	for (i = 0; str[i] != '\0' && flag != 2; i++)
+int _atoi(char *s)
+{
+	int i, sign = 1, flag = 0, output;
+	unsigned int result = 0;
+
+	for (i = 0; s[i] != '\0' && flag != 2; i++)
 	{
-		if (str[i] == '-')
+		if (s[i] == '-')
 			sign *= -1;
 
-		if (str[i] >= '0' && str[i] <= '9')
+		if (s[i] >= '0' && s[i] <= '9')
 		{
 			flag = 1;
-			output *= 10;
-			output += (str[i] - '0');
+			result *= 10;
+			result += (s[i] - '0');
 		}
 		else if (flag == 1)
 			flag = 2;
 	}
 
 	if (sign == -1)
-		result = -output;
+		output = -result;
 	else
-		result = output;
+		output = result;
 
-	return (result);
+	return (output);
 }

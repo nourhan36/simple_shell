@@ -1,12 +1,12 @@
 #include "shell.h"
 
 /**
- * _custom_puts - prints an input string
- * @str: the string to be printed
+ * _eputs - print a string
+ * @str: string
  *
  * Return: Nothing
  */
-void _custom_puts(char *str)
+void _eputs(char *str)
 {
 	int i = 0;
 
@@ -14,64 +14,62 @@ void _custom_puts(char *str)
 		return;
 	while (str[i] != '\0')
 	{
-		_custom_putchar(str[i]);
+		_eputchar(str[i]);
 		i++;
 	}
 }
 
 /**
- * _custom_putchar - writes the character c to stderr
- * @c: The character to print
+ * _eputchar - put a character to stderr
+ * @c: character
  *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * Return: 1 or -1
  */
-int _custom_putchar(char c)
+int _eputchar(char c)
 {
 	static int i;
-	static char buf[WRITE_BUFFER_SIZE];
+	static char buf[WRITE_BUF_SIZE];
 
-	if (c == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
 		write(2, buf, i);
 		i = 0;
 	}
-	if (c != BUFFER_FLUSH)
+	if (c != BUF_FLUSH)
 		buf[i++] = c;
 	return (1);
 }
 
 /**
- * _custom_putfd - writes the character c to given fd
- * @c: The character to print
- * @fd: The file descriptor to write to
+ * _putfd - put a character to fd
+ * @c: character
+ * @fd: filedescriptor
  *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * Return: 1 or -1
  */
-int _custom_putfd(char c, int fd)
+int _putfd(char c, int fd)
 {
 	static int i;
-	static char buf[WRITE_BUFFER_SIZE];
+	static char buf[WRITE_BUF_SIZE];
 
-	if (c == BUFFER_FLUSH || i >= WRITE_BUFFER_SIZE)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
 		write(fd, buf, i);
 		i = 0;
 	}
-	if (c != BUFFER_FLUSH)
+	if (c != BUF_FLUSH)
 		buf[i++] = c;
 	return (1);
 }
 
 /**
- * _custom_putsfd - prints an input string
- * @str: the string to be printed
- * @fd: the file descriptor to write to
+ * _putsfd - print string
+ * @str: string
+ * @fd: filedescriptor
  *
- * Return: the number of characters put
+ * Return: number of chars
  */
-int _custom_putsfd(char *str, int fd)
+int _putsfd(char *str, int fd)
 {
 	int i = 0;
 
@@ -79,8 +77,7 @@ int _custom_putsfd(char *str, int fd)
 		return (0);
 	while (*str)
 	{
-		i += _custom_putfd(*str++, fd);
+		i += _putfd(*str++, fd);
 	}
 	return (i);
 }
-

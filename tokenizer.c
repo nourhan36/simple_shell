@@ -1,113 +1,94 @@
 #include "shell.h"
 
 /**
- * split_string - splits a string into words. Repeat delimiters are ignored
- * @input_string: the input string
- * @delimiters: the delimiter string
- *
+ * **strtow - splits a string into words. Repeat delimiters are ignored
+ * @str: the input string
+ * @d: the delimeter string
  * Return: a pointer to an array of strings, or NULL on failure
  */
-char **split_string(char *input_string, char *delimiters)
+
+char **strtow(char *str, char *d)
 {
-	int i, j, k, m, num_words = 0;
-	char **result;
+	int i, j, k, m, numwords = 0;
+	char **s;
 
-	if (input_string == NULL || input_string[0] == 0)
+	if (str == NULL || str[0] == 0)
 		return (NULL);
+	if (!d)
+		d = " ";
+	for (i = 0; str[i] != '\0'; i++)
+		if (!is_delim(str[i], d) && (is_delim(str[i + 1], d) || !str[i + 1]))
+			numwords++;
 
-	if (!delimiters)
-		delimiters = " ";
-
-	for (i = 0; input_string[i] != '\0'; i++)
-		if (!is_delimiter(input_string[i], delimiters) && (is_delimiter(input_string[i + 1], delimiters) || !input_string[i + 1]))
-			num_words++;
-
-	if (num_words == 0)
+	if (numwords == 0)
 		return (NULL);
-
-	result = malloc((1 + num_words) * sizeof(char *));
-	if (!result)
+	s = malloc((1 + numwords) * sizeof(char *));
+	if (!s)
 		return (NULL);
-
-	for (i = 0, j = 0; j < num_words; j++)
+	for (i = 0, j = 0; j < numwords; j++)
 	{
-		while (is_delimiter(input_string[i], delimiters))
+		while (is_delim(str[i], d))
 			i++;
-
 		k = 0;
-		while (!is_delimiter(input_string[i + k], delimiters) && input_string[i + k])
+		while (!is_delim(str[i + k], d) && str[i + k])
 			k++;
-
-		result[j] = malloc((k + 1) * sizeof(char));
-		if (!result[j])
+		s[j] = malloc((k + 1) * sizeof(char));
+		if (!s[j])
 		{
 			for (k = 0; k < j; k++)
-				free(result[k]);
-			free(result);
+				free(s[k]);
+			free(s);
 			return (NULL);
 		}
-
 		for (m = 0; m < k; m++)
-			result[j][m] = input_string[i++];
-
-		result[j][m] = 0;
+			s[j][m] = str[i++];
+		s[j][m] = 0;
 	}
-
-	result[j] = NULL;
-	return (result);
+	s[j] = NULL;
+	return (s);
 }
 
 /**
- * split_string2 - splits a string into words
- * @input_string: the input string
- * @delimiter: the delimiter character
- *
+ * **strtow2 - splits a string into words
+ * @str: the input string
+ * @d: the delimeter
  * Return: a pointer to an array of strings, or NULL on failure
  */
-char **split_string2(char *input_string, char delimiter)
+char **strtow2(char *str, char d)
 {
-	int i, j, k, m, num_words = 0;
-	char **result;
+	int i, j, k, m, numwords = 0;
+	char **s;
 
-	if (input_string == NULL || input_string[0] == 0)
+	if (str == NULL || str[0] == 0)
 		return (NULL);
-
-	for (i = 0; input_string[i] != '\0'; i++)
-		if ((input_string[i] != delimiter && input_string[i + 1] == delimiter) ||
-		    (input_string[i] != delimiter && !input_string[i + 1]) || input_string[i + 1] == delimiter)
-			num_words++;
-
-	if (num_words == 0)
+	for (i = 0; str[i] != '\0'; i++)
+		if ((str[i] != d && str[i + 1] == d) ||
+				    (str[i] != d && !str[i + 1]) || str[i + 1] == d)
+			numwords++;
+	if (numwords == 0)
 		return (NULL);
-
-	result = malloc((1 + num_words) * sizeof(char *));
-	if (!result)
+	s = malloc((1 + numwords) * sizeof(char *));
+	if (!s)
 		return (NULL);
-
-	for (i = 0, j = 0; j < num_words; j++)
+	for (i = 0, j = 0; j < numwords; j++)
 	{
-		while (input_string[i] == delimiter && input_string[i] != delimiter)
+		while (str[i] == d && str[i] != d)
 			i++;
-
 		k = 0;
-		while (input_string[i + k] != delimiter && input_string[i + k] && input_string[i + k] != delimiter)
+		while (str[i + k] != d && str[i + k] && str[i + k] != d)
 			k++;
-
-		result[j] = malloc((k + 1) * sizeof(char));
-		if (!result[j])
+		s[j] = malloc((k + 1) * sizeof(char));
+		if (!s[j])
 		{
 			for (k = 0; k < j; k++)
-				free(result[k]);
-			free(result);
+				free(s[k]);
+			free(s);
 			return (NULL);
 		}
-
 		for (m = 0; m < k; m++)
-			result[j][m] = input_string[i++];
-
-		result[j][m] = 0;
+			s[j][m] = str[i++];
+		s[j][m] = 0;
 	}
-
-	result[j] = NULL;
-	return (result);
+	s[j] = NULL;
+	return (s);
 }
